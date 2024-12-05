@@ -14,10 +14,11 @@ RUN apt-get update && \
 apt-get install -y openvpn
 
 # Copy the NordVPN OpenVPN connection profiles
-RUN cd /etc/openvpn && \
-wget https://downloads.nordcdn.com/configs/archives/servers/ovpn.zip && \
-unzip ovpn.zip && \
-rm ovpn.zip
+# RUN cd /etc/openvpn && \
+# wget https://downloads.nordcdn.com/configs/archives/servers/ovpn.zip && \
+# unzip ovpn.zip && \
+# rm ovpn.zip
+
 
 ######### End Customizations ###########
 
