@@ -1,0 +1,15 @@
+FROM debian:latest
+
+RUN apt update && \
+    apt install -y \
+    iptables \
+    openvpn && \
+    apt clean
+
+# add local files
+COPY /root /
+
+RUN chmod +x ./entrypoint.sh
+
+VOLUME [ "/vpn/config" ]
+ENTRYPOINT [ "/entrypoint.sh" ]
