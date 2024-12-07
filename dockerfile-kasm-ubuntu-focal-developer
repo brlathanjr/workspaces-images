@@ -7,10 +7,98 @@ ENV INST_SCRIPTS $STARTUPDIR/install
 WORKDIR $HOME
 
 ######### Customize Container Here ###########
-
-
 #RUN touch $HOME/Desktop/hello.txt
 
+# Update System
+RUN sudo apt update && sudo apt upgrade -y
+
+# Install Brave Browser
+RUN sudo apt install -y curl
+RUN sudo curl -fsSL https://brave-browser-apt-release.s3.brave.com/brave-core.asc | gpg --dearmor > brave-browser-archive-keyring.gpg
+RUN sudo mv brave-browser-archive-keyring.gpg /usr/share/keyrings/
+RUN echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+RUN sudo apt update
+RUN sudo apt install -y brave-browser
+
+RUN cp /usr/share/applications/brave-browser.desktop ~/Desktop/
+RUN chmod +x ~/Desktop/brave-browser.desktop
+
+# Install Google Chrome
+RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+RUN sudo apt install -y ./google-chrome-stable_current_amd64.deb
+
+RUN cp /usr/share/applications/google-chrome.desktop ~/Desktop/
+RUN chmod +x ~/Desktop/google-chrome.desktop
+
+# Install Git
+RUN sudo apt install -y git
+
+#!/bin/bash
+
+# Define the shortcut file path
+RUN SHORTCUT=~/Desktop/git.desktop
+
+# Create the .desktop file
+RUN cat <<EOL > $SHORTCUT
+[Desktop Entry]
+Name=Git
+Exec=gnome-terminal -- bash -c "git --version; exec bash"
+Type=Application
+Icon=utilities-terminal
+Terminal=true
+EOL
+
+# Make the shortcut executable
+RUN chmod +x $SHORTCUT
+
+# Output success message
+RUN echo "Git desktop shortcut created successfully at $SHORTCUT"
+
+RUN chmod +x ~/Desktop/git.desktop
+
+# Install Inkscape
+RUN sudo apt install -y inkscape
+
+RUN cp /usr/share/applications/org.inkscape.Inkscape.desktop ~/Desktop/
+RUN chmod +x ~/Desktop/org.inkscape.Inkscape.desktop
+
+# Install Nextcloud
+RUN sudo add-apt-repository ppa:nextcloud-devs/client
+RUN sudo apt update
+RUN sudo apt install -y nextcloud-desktop
+
+RUN cp /usr/share/applications/nextcloud.desktop ~/Desktop/
+RUN chmod +x ~/Desktop/nextcloud.desktop
+
+# Install OnlyOffice
+RUN wget https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-desktopeditors_amd64.deb
+RUN sudo apt install -y ./onlyoffice-desktopeditors_amd64.deb
+
+RUN cp /usr/share/applications/onlyoffice-desktopeditors.desktop ~/Desktop/
+RUN chmod +x ~/Desktop/onlyoffice-desktopeditors.desktop
+
+# Install Postman
+RUN sudo snap install postman
+
+RUN cp /var/lib/snapd/desktop/applications/postman_postman.desktop ~/Desktop/
+RUN chmod +x ~/Desktop/postman_postman.desktop
+
+# Install Visual Studio Code
+RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+RUN sudo mv microsoft.gpg /usr/share/keyrings/
+RUN echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/vscode stable main" | sudo tee /etc/apt/sources.list.d/vscode.list
+RUN sudo apt update
+RUN sudo apt install -y code
+
+RUN cp /usr/share/applications/code.desktop ~/Desktop/
+RUN chmod +x ~/Desktop/code.desktop
+
+# Install Zoom
+RUN wget https://zoom.us/client/latest/zoom_amd64.deb
+RUN sudo apt install -y ./zoom_amd64.deb
+
+RUN cp /usr/share/applications/zoom.desktop ~/Desktop/
+RUN chmod +x ~/Desktop/zoom.desktop
 
 ######### End Customizations ###########
 
