@@ -2,6 +2,7 @@ FROM kasmweb/core-ubuntu-focal:1.15.0
 USER root
 
 ENV HOME /home/kasm-default-profile
+ENV APPLICATION /usr/share/applications 
 ENV STARTUPDIR /dockerstartup
 ENV INST_SCRIPTS $STARTUPDIR/install
 WORKDIR $HOME
@@ -10,100 +11,116 @@ WORKDIR $HOME
 #RUN touch $HOME/Desktop/hello.txt
 
 # Update System
-RUN sudo apt update && sudo apt upgrade -y
+RUN apt update && apt upgrade -y
+#RUN sudo apt install snapd -y
 
 # Install Brave Browser
-RUN sudo apt install -y curl
-RUN sudo curl -fsSL https://brave-browser-apt-release.s3.brave.com/brave-core.asc | gpg --dearmor > brave-browser-archive-keyring.gpg
-RUN sudo mv brave-browser-archive-keyring.gpg /usr/share/keyrings/
-RUN echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-release.list
-RUN sudo apt update
-RUN sudo apt install -y brave-browser
+RUN apt install -y curl && \
+    curl -fsSL https://brave-browser-apt-release.s3.brave.com/brave-core.asc | gpg --dearmor > brave-browser-archive-keyring.gpg && \
+    mv brave-browser-archive-keyring.gpg /usr/share/keyrings/ && \
+    echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" | tee /etc/apt/sources.list.d/brave-browser-release.list && \
+    apt update && apt install -y brave-browser
 
-RUN cp /usr/share/applications/brave-browser.desktop ~/Desktop/
-RUN chmod +x ~/Desktop/brave-browser.desktop
+RUN ln -s $APPLICATION/brave-browser.desktop $HOME/Desktop/ && \
+    chmod +x $HOME/Desktop/brave-browser.desktop && \
+    chown 1000:1000 $HOME/Desktop/brave-browser.desktop
 
 # Install Google Chrome
-RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-RUN sudo apt install -y ./google-chrome-stable_current_amd64.deb
+RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+    apt install -y ./google-chrome-stable_current_amd64.deb
 
-RUN cp /usr/share/applications/google-chrome.desktop ~/Desktop/
-RUN chmod +x ~/Desktop/google-chrome.desktop
+RUN ln -s $APPLICATION/google-chrome.desktop $HOME/Desktop/ && \
+    chmod +x $HOME/Desktop/google-chrome.desktop && \
+    chown 1000:1000 $HOME/Desktop/google-chrome.desktop
 
 # Install Git
-RUN sudo apt install -y git
-
-#!/bin/bash
-
-# Define the shortcut file path
-RUN SHORTCUT=~/Desktop/git.desktop
-
-# Create the .desktop file
-RUN cat <<EOL > $SHORTCUT
-[Desktop Entry]
-Name=Git
-Exec=gnome-terminal -- bash -c "git --version; exec bash"
-Type=Application
-Icon=utilities-terminal
-Terminal=true
-EOL
-
-# Make the shortcut executable
-RUN chmod +x $SHORTCUT
-
-# Output success message
-RUN echo "Git desktop shortcut created successfully at $SHORTCUT"
-
-RUN chmod +x ~/Desktop/git.desktop
+RUN apt install -y git 
+    # && \
+    # echo -e '[Desktop Entry]\nName=Git\nExec=gnome-terminal -- bash -c "git --version; exec bash"\nType=Application\nIcon=utilities-terminal\nTerminal=true' > $HOME/Desktop/git.desktop && \
+    # chmod +x $HOME/Desktop/git.desktop
 
 # Install Inkscape
-RUN sudo apt install -y inkscape
+RUN apt install -y inkscape
 
-RUN cp /usr/share/applications/org.inkscape.Inkscape.desktop ~/Desktop/
-RUN chmod +x ~/Desktop/org.inkscape.Inkscape.desktop
+RUN ln -s $APPLICATION/inkscape.desktop $HOME/Desktop/ && \
+    chmod +x $HOME/Desktop/inkscape.desktop && \
+    chown 1000:1000 $HOME/Desktop/inkscape.desktop
 
 # Install Nextcloud
-RUN sudo add-apt-repository ppa:nextcloud-devs/client
-RUN sudo apt update
-RUN sudo apt install -y nextcloud-desktop
+RUN add-apt-repository ppa:nextcloud-devs/client && \
+    apt update && \
+    apt install -y nextcloud-desktop
 
-RUN cp /usr/share/applications/nextcloud.desktop ~/Desktop/
-RUN chmod +x ~/Desktop/nextcloud.desktop
+RUN ln -s $APPLICATION/com.nextcloud.desktopclient.nextcloud.desktop $HOME/Desktop/ && \
+    chmod +x $HOME/Desktop/com.nextcloud.desktopclient.nextcloud.desktop && \
+    chown 1000:1000 $HOME/Desktop/com.nextcloud.desktopclient.nextcloud.desktop
 
 # Install OnlyOffice
-RUN wget https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-desktopeditors_amd64.deb
-RUN sudo apt install -y ./onlyoffice-desktopeditors_amd64.deb
+#RUN snap install onlyoffice-desktopeditors
+#RUN wget https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-desktopeditors_amd64.deb
+#RUN sudo apt install -y ./onlyoffice-desktopeditors_amd64.deb -y
 
-RUN cp /usr/share/applications/onlyoffice-desktopeditors.desktop ~/Desktop/
-RUN chmod +x ~/Desktop/onlyoffice-desktopeditors.desktop
+#RUN cp /usr/share/applications/onlyoffice-desktopeditors.desktop ~/Desktop/
+#RUN chmod +x ~/Desktop/onlyoffice-desktopeditors.desktop
+
+# Install LibreOffice
+RUN apt update && apt install -y libreoffice && \
+    ln -s $APPLICATION/libreoffice-writer.desktop $HOME/Desktop/libreoffice-writer.desktop && \
+    ln -s $APPLICATION/libreoffice-calc.desktop $HOME/Desktop/libreoffice-calc.desktop && \
+    ln -s $APPLICATION/libreoffice-impress.desktop $HOME/Desktop/libreoffice-impress.desktop && \
+    ln -s $APPLICATION/libreoffice-base.desktop $HOME/Desktop/libreoffice-base.desktop && \
+    ln -s $APPLICATION/libreoffice-draw.desktop $HOME/Desktop/libreoffice-draw.desktop && \
+    ln -s $APPLICATION/libreoffice-math.desktop $HOME/Desktop/libreoffice-math.desktop
+
+RUN chmod +x $HOME/Desktop/libreoffice-writer.desktop && \
+    chmod +x $HOME/Desktop/libreoffice-calc.desktop && \
+    chmod +x $HOME/Desktop/libreoffice-impress.desktop && \
+    chmod +x $HOME/Desktop/libreoffice-base.desktop && \
+    chmod +x $HOME/Desktop/libreoffice-draw.desktop && \
+    chmod +x $HOME/Desktop/libreoffice-math.desktop
+
+RUN chown 1000:1000 $HOME/Desktop/libreoffice-writer.desktop && \
+    chown 1000:1000 $HOME/Desktop/libreoffice-calc.desktop && \
+    chown 1000:1000 $HOME/Desktop/libreoffice-impress.desktop && \
+    chown 1000:1000 $HOME/Desktop/libreoffice-base.desktop && \
+    chown 1000:1000 $HOME/Desktop/libreoffice-draw.desktop && \
+    chown 1000:1000 $HOME/Desktop/libreoffice-math.desktop
 
 # Install Postman
-RUN sudo snap install postman
+#RUN sudo snap install postman
 
-RUN cp /var/lib/snapd/desktop/applications/postman_postman.desktop ~/Desktop/
-RUN chmod +x ~/Desktop/postman_postman.desktop
+#RUN cp /var/lib/snapd/desktop/applications/postman_postman.desktop ~/Desktop/
+#RUN chmod +x ~/Desktop/postman_postman.desktop
 
 # Install Visual Studio Code
-RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-RUN sudo mv microsoft.gpg /usr/share/keyrings/
-RUN echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/vscode stable main" | sudo tee /etc/apt/sources.list.d/vscode.list
-RUN sudo apt update
-RUN sudo apt install -y code
+RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg && \
+    mv microsoft.gpg /usr/share/keyrings/ && \
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/vscode stable main" | tee /etc/apt/sources.list.d/vscode.list && \
+    apt update && apt install -y code
 
-RUN cp /usr/share/applications/code.desktop ~/Desktop/
-RUN chmod +x ~/Desktop/code.desktop
+RUN ln -s $APPLICATION/code.desktop $HOME/Desktop/ && \
+    chmod +x $HOME/Desktop/code.desktop && \
+    chown 1000:1000 $HOME/Desktop/code.desktop
 
 # Install Zoom
-RUN wget https://zoom.us/client/latest/zoom_amd64.deb
-RUN sudo apt install -y ./zoom_amd64.deb
+RUN wget https://zoom.us/client/latest/zoom_amd64.deb && \
+    apt install -y ./zoom_amd64.deb
 
-RUN cp /usr/share/applications/zoom.desktop ~/Desktop/
-RUN chmod +x ~/Desktop/zoom.desktop
+RUN ln -s $APPLICATION/Zoom.desktop $HOME/Desktop/ && \
+    chmod +x $HOME/Desktop/Zoom.desktop && \
+    chown 1000:1000 $HOME/Desktop/Zoom.desktop
+
+# Cleanup
+RUN rm -rf $HOME/google-chrome-stable_current_amd64.deb && \
+    rm -rf $HOME/zoom_amd64.deb    
 
 ######### End Customizations ###########
 
+# Set permissions for Desktop directory
+RUN chmod -R 755 $HOME/Desktop && chown -R 1000:1000 $HOME/Desktop
+
 RUN chown 1000:0 $HOME
-RUN $STARTUPDIR/set_user_permission.sh $HOME
+# RUN $STARTUPDIR/set_user_permission.sh $HOME
 
 ENV HOME /home/kasm-user
 WORKDIR $HOME
