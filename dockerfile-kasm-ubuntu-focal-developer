@@ -23,7 +23,7 @@ RUN apt install -y curl && \
 
 RUN ln -s $APPLICATION/brave-browser.desktop $HOME/Desktop/ && \
     chmod +x $HOME/Desktop/brave-browser.desktop && \
-    chown 1000:1000 $HOME/Desktop/brave-browser.desktop
+    chown 1000:0 $HOME/Desktop/brave-browser.desktop
 
 # Install Google Chrome
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
@@ -31,7 +31,7 @@ RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.d
 
 RUN ln -s $APPLICATION/google-chrome.desktop $HOME/Desktop/ && \
     chmod +x $HOME/Desktop/google-chrome.desktop && \
-    chown 1000:1000 $HOME/Desktop/google-chrome.desktop
+    chown 1000:0 $HOME/Desktop/google-chrome.desktop
 
 # Install Git
 RUN apt install -y git 
@@ -44,7 +44,7 @@ RUN apt install -y inkscape
 
 RUN ln -s $APPLICATION/inkscape.desktop $HOME/Desktop/ && \
     chmod +x $HOME/Desktop/inkscape.desktop && \
-    chown 1000:1000 $HOME/Desktop/inkscape.desktop
+    chown 1000:0 $HOME/Desktop/inkscape.desktop
 
 # Install Nextcloud
 RUN add-apt-repository ppa:nextcloud-devs/client && \
@@ -53,9 +53,8 @@ RUN add-apt-repository ppa:nextcloud-devs/client && \
 
 RUN ln -s $APPLICATION/com.nextcloud.desktopclient.nextcloud.desktop $HOME/Desktop/ && \
     chmod +x $HOME/Desktop/com.nextcloud.desktopclient.nextcloud.desktop && \
-    chown 1000:1000 $HOME/Desktop/com.nextcloud.desktopclient.nextcloud.desktop
+    chown 1000:0 $HOME/Desktop/com.nextcloud.desktopclient.nextcloud.desktop
 
-# Install OnlyOffice
 #RUN snap install onlyoffice-desktopeditors
 #RUN wget https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-desktopeditors_amd64.deb
 #RUN sudo apt install -y ./onlyoffice-desktopeditors_amd64.deb -y
@@ -79,18 +78,12 @@ RUN chmod +x $HOME/Desktop/libreoffice-writer.desktop && \
     chmod +x $HOME/Desktop/libreoffice-draw.desktop && \
     chmod +x $HOME/Desktop/libreoffice-math.desktop
 
-RUN chown 1000:1000 $HOME/Desktop/libreoffice-writer.desktop && \
-    chown 1000:1000 $HOME/Desktop/libreoffice-calc.desktop && \
-    chown 1000:1000 $HOME/Desktop/libreoffice-impress.desktop && \
-    chown 1000:1000 $HOME/Desktop/libreoffice-base.desktop && \
-    chown 1000:1000 $HOME/Desktop/libreoffice-draw.desktop && \
-    chown 1000:1000 $HOME/Desktop/libreoffice-math.desktop
-
-# Install Postman
-#RUN sudo snap install postman
-
-#RUN cp /var/lib/snapd/desktop/applications/postman_postman.desktop ~/Desktop/
-#RUN chmod +x ~/Desktop/postman_postman.desktop
+RUN chown 1000:0 $HOME/Desktop/libreoffice-writer.desktop && \
+    chown 1000:0 $HOME/Desktop/libreoffice-calc.desktop && \
+    chown 1000:0 $HOME/Desktop/libreoffice-impress.desktop && \
+    chown 1000:0 $HOME/Desktop/libreoffice-base.desktop && \
+    chown 1000:0 $HOME/Desktop/libreoffice-draw.desktop && \
+    chown 1000:0 $HOME/Desktop/libreoffice-math.desktop
 
 # Install Visual Studio Code
 RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg && \
@@ -100,7 +93,7 @@ RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor 
 
 RUN ln -s $APPLICATION/code.desktop $HOME/Desktop/ && \
     chmod +x $HOME/Desktop/code.desktop && \
-    chown 1000:1000 $HOME/Desktop/code.desktop
+    chown 1000:0 $HOME/Desktop/code.desktop
 
 # Install Zoom
 RUN wget https://zoom.us/client/latest/zoom_amd64.deb && \
@@ -108,19 +101,19 @@ RUN wget https://zoom.us/client/latest/zoom_amd64.deb && \
 
 RUN ln -s $APPLICATION/Zoom.desktop $HOME/Desktop/ && \
     chmod +x $HOME/Desktop/Zoom.desktop && \
-    chown 1000:1000 $HOME/Desktop/Zoom.desktop
+    chown 1000:0 $HOME/Desktop/Zoom.desktop
 
 # Cleanup
 RUN rm -rf $HOME/google-chrome-stable_current_amd64.deb && \
     rm -rf $HOME/zoom_amd64.deb    
 
+
 ######### End Customizations ###########
 
 # Set permissions for Desktop directory
-RUN chmod -R 755 $HOME/Desktop && chown -R 1000:1000 $HOME/Desktop
+RUN chmod -R 755 $HOME/Desktop && chown -R 1000:0 $HOME/Desktop
 
 RUN chown 1000:0 $HOME
-# RUN $STARTUPDIR/set_user_permission.sh $HOME
 
 ENV HOME /home/kasm-user
 WORKDIR $HOME
