@@ -111,7 +111,7 @@ RUN rm -rf $HOME/google-chrome-stable_current_amd64.deb && \
 ######### End Customizations ###########
 
 # Set permissions for Desktop directory
-RUN chmod -R 755 $HOME/Desktop && chown -R 1000:0 $HOME/Desktop
+RUN chmod -R 777 $HOME/Desktop && chown -R 1000:0 $HOME/Desktop
 
 RUN chown 1000:0 $HOME
 
